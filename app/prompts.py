@@ -1,3 +1,5 @@
+"""Module containig prompts"""
+
 PROMPT_A1 = """
 <role>
 You are a Senior Insights Manager with decades of experience, and a background
@@ -18,17 +20,7 @@ i.e. whether it is aimed at brand building or aimed at driving conversion.
 </task>
 
 <response-template>
-Provide the output in the following JSON format
-```
-[
-    {
-        "ad_description":$description,
-        "ad_purpose":$purpose
-    }
-]
-```
-In this format, $description is a placeholder for the description of the
-advert, $purpose can only be either "brand-building" or "conversion".
+{response_template}
 </response-template>.
 """
 
@@ -51,16 +43,7 @@ where available.
 </task>
 
 <response-template>
-Provide the output in the following JSON format
-```
-[
-    {
-        "saliency_description":$description
-    }
-]
-```
-In this format, $description is a placeholder for the description of the
-visually salient elements in the advertisement.
+{response_template}
 <response-template>
 """
 
@@ -85,17 +68,8 @@ advertisement.
 </task>
 
 <response-template>
-Provide the output in the following JSON format
-```
-[
-    {
-        "cognitive_description":$description
-    }
-]
-```
-In this format, $description is a placeholder for assessment of the cognitive
-load induced by the advertisement in viewers.
-</response-template>
+{response_template}
+<response-template>
 """
 
 PROMPT_C = """
@@ -114,20 +88,11 @@ Summarise the text provided from the two different outputs and ensure that the
 JSON format of the final output matches the requirements provided below.
 </task>
 
+<input>
+{input}
+</input>
+
 <response-template>
-Provide the final output in the following JSON format
-```
-[
-    {
-        "ad_description":$ad_description,
-        "ad_purpose":$ad_purpose,
-        "saliency_description":$saliency_description,
-        "cognitive_description":$cognitive_description
-    }
-]
-```
-In this format, $ad_description, $ad_purpose, $saliency_description and
-$cognitive_description are placeholders for the summarised versions of the text
-provided as input.
-</response-template>
+{response_template}
+<response-template>
 """

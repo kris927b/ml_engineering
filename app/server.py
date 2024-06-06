@@ -5,21 +5,39 @@ from fastapi.responses import RedirectResponse
 
 from dotenv import load_dotenv
 
-from app.chain_prompts import chain_of_prompts, single_prompt
-from app.utils import convert_string_to_json
+from app.chain_prompts import (
+    chain_of_prompts,
+    single_prompt,
+    summarization_prompt,
+)
 
 app = FastAPI(title="Adverts")
 
 
 @app.get("/")
 async def redirect_root_to_docs():
+    """Redirect to docs when accessing root
+
+    Returns:
+        RedirectResponse: Redirect to docs page
+    """
     return RedirectResponse("/docs")
 
 
 @app.post("/process_advert")
 async def process_advert(
     image: UploadFile = File(...), heatmap: UploadFile = File(...)
-):
+) -> dict:
+    """Process an advert and the heatmap from neurons.
+
+    Args:
+        image (UploadFile, optional): Image of an advert. Defaults to File(...).
+        heatmap (UploadFile, optional): Heatmap of an advert. Defaults to File(...).
+
+    Returns:
+        dict: Dictionary with four keys: ad_description, ad_purpose, saliency_description, cognitive_description.
+    """
+
     load_dotenv()
     # Convert uploaded files to appropriate formats (e.g., base64 or PIL Image)
     image_data = await image.read()
@@ -32,13 +50,11 @@ async def process_advert(
     process_b_output = single_prompt(image_data)
 
     # Step 3: Process C
-    # final_output = process_c(process_a1_output, process_a2_output, process_b_output)
+    final_output = summarization_prompt(
+        process_a1_output, process_a2_output, process_b_output
+    )
 
-    return {
-        "a1": convert_string_to_json(process_a1_output),
-        "a2": convert_string_to_json(process_a2_output),
-        "b": convert_string_to_json(process_b_output),
-    }  # json.loads(f"[{process_a1_output}, {process_a2_output}]")
+    return final_output.dict()
 
 
 if __name__ == "__main__":
