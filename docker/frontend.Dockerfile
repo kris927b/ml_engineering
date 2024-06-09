@@ -8,14 +8,10 @@ WORKDIR /code
 
 COPY ./pyproject.toml ./README.md ./poetry.lock* ./
 
-COPY ./package[s] ./packages
-
 RUN poetry install  --no-interaction --no-ansi --no-root
 
-COPY ./app ./app
-
-RUN poetry install --no-interaction --no-ansi
+COPY ./client ./client
 
 EXPOSE 8080
 
-CMD exec uvicorn app.server:app --host 0.0.0.0 --port 8080
+CMD streamlit run client/app.py
